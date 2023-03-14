@@ -15,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
@@ -29,6 +31,9 @@ class MemberRepositoryTest {
 
 	@Autowired
 	TeamRepository teamRepository;
+
+	@PersistenceContext
+	EntityManager em;
 
 	@Test
 	public void testMember()  {
@@ -224,5 +229,26 @@ class MemberRepositoryTest {
 		assertThat(page.isFirst()).isTrue();
 		assertThat(page.hasNext()).isTrue();
 
+	}
+
+	@Test
+	void bulkUpdate() {
+		// given
+		memberRepository.save(new Member("member1", 10));
+		memberRepository.save(new Member("member2", 19));
+		memberRepository.save(new Member("member3", 20));
+		memberRepository.save(new Member("member4", 21));
+		memberRepository.save(new Member("member5", 40));
+
+		// when
+		int resultCount = memberRepository.bulkAgePlus(20);
+		// em.flush();
+		// em.clear(); // @Modifying 내에 clearAutomatically = true 로 대체 가능
+
+		Member member5 = memberRepository.findByUsername("member5").get(0);
+		System.out.println("member5 = " + member5); // 40이 된다. -> em.flush(), em.clear() 로 초기화 후 해결
+
+		// then
+		assertThat(resultCount).isEqualTo(3);
 	}
 }
