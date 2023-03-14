@@ -204,8 +204,12 @@ class MemberRepositoryTest {
 		int age = 10;
 
 		// when
-		// Page<Member> page = memberRepository.findByAge(age, pageRequest);
-		Page<Member> page = memberRepository.findByAgeQuery(age, pageRequest);
+		Page<Member> page = memberRepository.findByAge(age, pageRequest);
+
+		// map() 을 사용해 dto로 변환
+		Page<MemberDto> toMapToDto = page.map(member -> new MemberDto(member.getId(), member.getUsername(), null));
+
+		// Page<Member> page = memberRepository.findByAgeQuery(age, pageRequest);
 		List<Member> content = page.getContent();
 		long totalElements = page.getTotalElements();
 
