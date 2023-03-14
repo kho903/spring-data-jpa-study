@@ -157,4 +157,34 @@ class MemberRepositoryTest {
 		assertThat(result.get(1)).isEqualTo(m2);
 		assertThat(result.size()).isEqualTo(2);
 	}
+
+	@Test
+	void returnType() {
+		Member m1 = new Member("AAA", 10);
+		Member m2 = new Member("BBB", 20);
+		Member m3 = new Member("BBB", 30);
+		memberRepository.save(m1);
+		memberRepository.save(m2);
+		memberRepository.save(m3);
+
+		List<Member> aaa = memberRepository.findListByUsername("AAA");
+		Member findMember = memberRepository.findMemberByUsername("AAA");
+		Optional<Member> optionalAAA = memberRepository.findOptionalByUsername("AAA");
+		System.out.println(aaa);
+		System.out.println("findMember = " + findMember);
+		System.out.println(optionalAAA);
+
+		List<Member> emptyCollection = memberRepository.findListByUsername("asd");
+		System.out.println("emptyCollection = " + emptyCollection); // not null, empty collection
+
+		Member nullMember = memberRepository.findMemberByUsername("asd");
+		System.out.println("nullMember = " + nullMember); // null
+
+		Optional<Member> optionalEmpty = memberRepository.findOptionalByUsername("asd");
+		System.out.println("optionalEmpty = " + optionalEmpty); // optionalEmpty = Optional.empty
+
+		// 단건 조회가 아닐 경우 IncorrectResultSizeDataAccessException
+		// Optional<Member> bbb = memberRepository.findOptionalByUsername("BBB");
+		// System.out.println("bbb = " + bbb);
+	}
 }
