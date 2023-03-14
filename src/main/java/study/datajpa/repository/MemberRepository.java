@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,4 +38,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	List<Member> findListByUsername(String username);
 	Member findMemberByUsername(String username);
 	Optional<Member> findOptionalByUsername(String username);
+
+	Page<Member> findByAge(int age, Pageable pageable);
+
+	// countQuery를 풀어서 쓰기 - 성능 최적화 : 라고 강의해서 하지만 부트 3.0에서는 디폴트로 해주는 것으로 보임
+	@Query(value = "select m from Member m left join m.team t",
+			countQuery = "select count(m.username) from Member m")
+	Page<Member> findByAgeQuery(int age, Pageable pageable);
 }

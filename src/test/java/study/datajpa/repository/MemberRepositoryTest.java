@@ -9,6 +9,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -186,5 +189,36 @@ class MemberRepositoryTest {
 		// 단건 조회가 아닐 경우 IncorrectResultSizeDataAccessException
 		// Optional<Member> bbb = memberRepository.findOptionalByUsername("BBB");
 		// System.out.println("bbb = " + bbb);
+	}
+
+	@Test
+	void paging() {
+		// given
+		memberRepository.save(new Member("member1", 10));
+		memberRepository.save(new Member("member2", 10));
+		memberRepository.save(new Member("member3", 10));
+		memberRepository.save(new Member("member4", 10));
+		memberRepository.save(new Member("member5", 10));
+
+		PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+		int age = 10;
+
+		// when
+		// Page<Member> page = memberRepository.findByAge(age, pageRequest);
+		Page<Member> page = memberRepository.findByAgeQuery(age, pageRequest);
+		List<Member> content = page.getContent();
+		long totalElements = page.getTotalElements();
+
+		// then
+		System.out.println(content);
+		System.out.println("totalElements = " + totalElements);
+
+		assertThat(content.size()).isEqualTo(3);
+		assertThat(page.getTotalElements()).isEqualTo(5);
+		assertThat(page.getNumber()).isEqualTo(0);
+		assertThat(page.getTotalPages()).isEqualTo(2);
+		assertThat(page.isFirst()).isTrue();
+		assertThat(page.hasNext()).isTrue();
+
 	}
 }
