@@ -298,4 +298,27 @@ class MemberRepositoryTest {
 		// 사용 후 : 변경을 무시.
 		em.flush();
 	}
+
+	@Test
+	void lock() {
+		// given
+		Member member1 = new Member("member1", 10);
+		memberRepository.save(member1);
+		em.flush();
+		em.clear();
+
+		// when
+		List<Member> result = memberRepository.findLockByUsername("member1");
+		/*
+		select
+			m1_0.member_id,
+			m1_0.age,
+			m1_0.team_id,
+			m1_0.username
+		from
+			member m1_0
+		where
+			m1_0.username=? for update
+		 */
+	}
 }
