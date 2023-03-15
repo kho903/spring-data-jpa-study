@@ -280,4 +280,22 @@ class MemberRepositoryTest {
 			System.out.println("member.team = " + member.getTeam().getName());
 		}
 	}
+
+	@Test
+	void queryHint() {
+		// given
+		Member member1 = new Member("member1", 10);
+		memberRepository.save(member1);
+		em.flush();
+		em.clear();
+
+		// when
+		// Member findMember = memberRepository.findById(member1.getId()).get();
+		Member findMember = memberRepository.findReadOnlyByUsername("member1");
+		findMember.setUsername("member2");
+
+		// 쿼리 힌트 사용 전 : 변경 감지로 업데이트 쿼리 발생 -> 원본이 있어야 함. 즉, 데이터를 2개 가지고 있어야 함. (메모리 낭비)
+		// 사용 후 : 변경을 무시.
+		em.flush();
+	}
 }
