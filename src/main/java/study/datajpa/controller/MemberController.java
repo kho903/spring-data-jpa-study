@@ -1,6 +1,7 @@
 package study.datajpa.controller;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,7 @@ public class MemberController {
 	}
 
 	@GetMapping("/members")
-	public Page<MemberDto> list(@PageableDefault(size = 5, sort = "username") Pageable pageable) {
+	public Page<MemberDto> list(@PageableDefault(size = 5) Pageable pageable) {
 		Page<Member> page = memberRepository.findAll(pageable);
 		return page.map(MemberDto::new);
 	}
