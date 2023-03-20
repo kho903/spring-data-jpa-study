@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.repository.MemberRepository;
 
@@ -30,8 +31,9 @@ public class MemberController {
 	}
 
 	@GetMapping("/members")
-	public Page<Member> list(@PageableDefault(size = 5, sort = "username") Pageable pageable) {
-		return memberRepository.findAll(pageable);
+	public Page<MemberDto> list(@PageableDefault(size = 5, sort = "username") Pageable pageable) {
+		Page<Member> page = memberRepository.findAll(pageable);
+		return page.map(MemberDto::new);
 	}
 
 	@PostConstruct
