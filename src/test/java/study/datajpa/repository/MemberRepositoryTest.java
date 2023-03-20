@@ -32,6 +32,9 @@ class MemberRepositoryTest {
 	@Autowired
 	TeamRepository teamRepository;
 
+	@Autowired
+	MemberQueryRepository memberQueryRepository;
+
 	@PersistenceContext
 	EntityManager em;
 
@@ -320,5 +323,10 @@ class MemberRepositoryTest {
 		where
 			m1_0.username=? for update
 		 */
+	}
+
+	@Test
+	void callCustom() {
+		List<Member> result = memberRepository.findMemberCustom();
 	}
 }
